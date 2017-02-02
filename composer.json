@@ -1,0 +1,22 @@
+{
+    "name": "svratenkov/ScssWeb",
+    "description": "Scss Compiler & Watcher in PHP",
+    "keywords": ["scss", "compiler", "watcher", "php"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sergei Vratenkov",
+            "email": "svratenkov@mail.ru"
+        }
+    ],
+     "require": {
+        "php": ">=5.5.0",
+        "leafo/scssphp": "0.6.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Micro\\": "src/Micro",
+            "App\\": "src/App"
+        }
+    }
+}
