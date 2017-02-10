@@ -85,8 +85,9 @@
 						</p>
 						<p>
 							Go to your browser and enter URL to <b><code>ScssWeb</code></b>, for example:<br/>
-							with <code>index.php?query</code>: <pre>http://localhost/path/to/scssweb/index.php</pre>
-							with <code>.htaccess</code> redirecting: <pre>http://localhost/path/to/scssweb/</pre>
+							with <code>index.php?query</code>: <a href="http://localhost/path/to/scssweb/index.php">http://localhost/path/to/scssweb/index.php</a><br/>
+							with <code>.htaccess</code> redirecting: <a href="http://localhost/path/to/scssweb/">http://localhost/path/to/scssweb/</a><br/>
+							<br/>
 							You will see <b><code>ScssWeb</code></b> home page.
 						</p>
 						<p>
@@ -126,7 +127,7 @@
 								<tbody>
 									<tr>
 										<td>Home</td>
-										<td><b><code>ScssWeb</code></b> Doc - this page</td>
+										<td><b><code>ScssWeb</code></b> Help - this page</td>
 									</tr>
 									<tr>
 										<td>Compile</td>
