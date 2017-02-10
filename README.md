@@ -39,9 +39,7 @@ You are ready to test **ScssWeb** application!
 **ScssWeb** supports both classic URL style with `index.php?query`or SEO-frendly style with query segments only.
 
 Go to your browser and enter URL to **ScssWeb**, for example:
-
 with `index.php?query`: <code>http://localhost/path/to/scssweb/index.php</code>
-
 with `.htaccess` redirecting: <code>http://localhost/path/to/scssweb/</code>
 
 You will see **ScssWeb** home page.
