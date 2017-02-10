@@ -66,7 +66,7 @@ Here is a list of **ScssWeb** functionality:
 | Stop             | Stop watching session
 | Project buttons  | Activate selected <code>project</code> and shows it's details
 | ClearCache       | Clear cache dir for the active <code>project</code>
-| ---              | ---
+| ----             | ---
 
 ## License
 
