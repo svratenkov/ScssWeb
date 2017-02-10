@@ -57,6 +57,7 @@ Any pair of source SCSS file and output SCS file is referred to as a <code>proje
 By editing the *projects.php* config file you may alter or remove any existent <code>project</code>, or add new <code>project</code> to **ScssWeb**.
 
 Here is a list of **ScssWeb** functionality:
+
 |Function & Button | Function description
 | ---              | ---
 | Home             | ScssWeb Help
