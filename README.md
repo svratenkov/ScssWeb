@@ -1,4 +1,4 @@
-# ScssWeb - Scss Compiler & Watcher wtitten in PHP
+﻿# ScssWeb - Scss Compiler & Watcher wtitten in PHP
 
 [![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
 
