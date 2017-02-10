@@ -1,4 +1,4 @@
-﻿# ScssWeb - Scss Compiler & Watcher wtitten in PHP
+# ScssWeb - Scss Compiler & Watcher wtitten in PHP
 
 [![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
 
@@ -11,8 +11,7 @@
  - light, yet powerful. It can do all things that applications like Scout, Koala, ... can
  - fully configurable
  - cross-platformed as it runs on your local web server
- - written as simple and ascetic as possible to give you real
-   possibility to modify it as you need.
+ - written as simple and ascetic as possible to give you real possibility to modify it as you need.
    
 ## Installation
 
@@ -38,10 +37,8 @@ Composer will download the latest version of [leafo/scssphp](https://github.com/
 You are ready to test **ScssWeb** application!
 **ScssWeb** supports both classic URL style with `index.php?query`or SEO-frendly style with query segments only.
 
-Go to your browser and enter URL to **ScssWeb**, for example:
-
-with `index.php?query`: <code>http://localhost/path/to/scssweb/index.php</code>
-
+Go to your browser and enter URL to **ScssWeb**, for example:<br/>
+with `index.php?query`: <code>http://localhost/path/to/scssweb/index.php</code><br/>
 with `.htaccess` redirecting: <code>http://localhost/path/to/scssweb/</code>
 
 You will see **ScssWeb** home page.
