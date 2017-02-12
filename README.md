@@ -13,11 +13,18 @@
  - cross-platformed as it runs on your local web server
  - written as simple and ascetic as possible to give you real possibility to modify it as you need.
    
-**ScssWeb** screenshots:
+## ScssWeb screenshots
 
+**ScssWeb** home page:
 ![Image of home](images/home.png)
+
+**ScssWeb** compile page:
 ![Image of compile](images/compile.png)
+
+**ScssWeb** watch page:
 ![Image of watch](images/watch.png)
+
+**ScssWeb** project page:
 ![Image of project](images/project.png)
 
 ## Installation
