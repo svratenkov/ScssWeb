@@ -121,7 +121,7 @@ class Controller extends MicroController
 	{
 		$results = Dispatcher::rebuild();
 
-		$msg = Output::append(Dispatcher::outputFormat($results), 'Welcome to Scss Compiler!');
+		$msg = Output::append(Dispatcher::outputFormat($results), 'Welcome to ScssWeb Compiler!');
 
 		$this->layout->content
 			->name('compile')
@@ -135,7 +135,7 @@ class Controller extends MicroController
 	public function actionClear()
 	{
 		Output::set();
-		Output::append('Welcome to Scss Compiler!');
+		Output::append('Welcome to ScssWeb Compiler!');
 
 		Request::redirect('compile');
 	}
@@ -153,7 +153,7 @@ class Controller extends MicroController
 
 		// Replace previous output with starting watch message
 		Output::set();
-		$greeting = "Welcome to Scss Watcher!<br/>Watching {$results['scss_file']}";
+		$greeting = "Welcome to ScssWeb Watcher!<br/>Watching {$results['scss_file']}";
 		$msg = Output::append(Dispatcher::outputFormat($results), $greeting);
 
 		// Add page script with autorunning watch loop
