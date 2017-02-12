@@ -90,7 +90,7 @@ class Controller extends MicroController
 	public function after($response)
 	{
 		// Add page titles
-		$this->layout->with('title', static::$page_titles[static::$action].' - SCSS Web Watcher');
+		$this->layout->with('title', static::$page_titles[static::$action].' - ScssWeb Watcher');
 
 		// Define project name tabs in the header
 		$this->layout->header->with([
