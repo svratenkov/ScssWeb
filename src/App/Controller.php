@@ -43,7 +43,7 @@ class Controller extends MicroController
 	 */
     public static function call($action, $param = NULL)
     {
-		// Check for requeting project's page
+		// Check for project's page requesting
 		if (substr($action, 0, 1) === '$') {
 			$project = substr($action, 1);
 			$action = 'project';
@@ -77,9 +77,9 @@ class Controller extends MicroController
 			->name('layout')
 			->with([
 				'icon'		=> 'grab.ico',
-				'header'	=> View::make('header'),
-				'content'	=> View::make(),
-				'footer'	=> View::make('footer'),
+				'header'	=> new View('header'),
+				'content'	=> new View(),
+				'footer'	=> new View('footer'),
 			])
 		;
 	}

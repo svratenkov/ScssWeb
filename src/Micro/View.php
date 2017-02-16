@@ -1,26 +1,19 @@
 <?php
 /*
-	Вьюха - шаблон (php файл) с переменными
+	View - Template with vars
 */
 namespace Micro;
 
 class View
 {
-	public static $dir;			// Директорий шаблонов вьюх
+	public static $dir;			// View templates dir
 
-	public $name;				// Имя шаблона вьюхи относительно static::$dir
-	public $data;				// Данные (переменные шаблона) вьюхи - наследуются от Container
-
-	/*
-		Статическая фабрика вьюхи
-	*/
-	public static function make($name = NULL, $data = [])
-	{
-		return new static($name, $data);
-	}
+	public $name;				// View template file name relative to static::$dir
+	public $data;				// View template vars
+	public $file;				// View template abs file name
 
 	/*
-		Конструктор вьюхи
+		Constructor
 	*/
 	public function __construct($name = NULL, $data = [])
 	{
@@ -72,9 +65,7 @@ class View
 	{
 		$data = $this->data;
 
-		// All nested views and responses are evaluated before the main view.
-		// This allows the assets used by nested views to be added to the
-		// asset container before the main view is evaluated.
+		// All nested views are evaluated before the main view
 		foreach ($data as $key => $value) 
 		{
 			if ($value instanceof View)
@@ -86,67 +77,33 @@ class View
 		return $data;
 	}
 
-	/*
-		Создать вложенную вьюху как значение переменной $var
-	*/
-	public function nest($var, $name = NULL, $data = [])
-	{
-		$view = static::make($name, $data);
-
-		// Цепочечный возврат себя
-		return $this->with($var, $view);
-	}
-
-	/*
-		Рендеринг текста шаблона с переменными
-		Сначала пробует шаблон Blade, затем - PHP
-		Возвращает HTML строку
-	*/
+	/**
+	 * Render view.
+	 *
+	 * @return string
+	 */
 	public function render()
 	{
-		$_file_ = static::$dir.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $this->name).'.php';
+		$this->file = static::$dir.DIRECTORY_SEPARATOR.$this->name.'.php';
 
-		// интерпретируем PHP шаблон
-		if (file_exists($_file_))
+		if (! file_exists($this->file))
 		{
-			ob_start();
-
-			try {					// Load the view within the current scope
-				// Единичная загрузка без буферизации - инклудим в контексте данных
-				extract($this->data());
-				include $_file_;
-			}
-			catch (\Exception $e) {
-				ob_end_clean();		// Delete the output buffer
-				throw $e;			// Re-throw the exception
-			}
-
-			return ob_get_clean();
+			throw new \Exception("Can't find view template `{$this->file}`");
 		}
-		else
-		{
-			throw new \Exception("Can't find template `{$_file_}`");
-			return "<p>Can't find view template `{$_file_}`</p>";
-		}
-	}
 
-	/*
-		Магическое преобразование в строку
-		!!!! C обработкой исключений - они запрещены в __toString()
-	*/
-	public function __toString()
-	{
+		// Add view data to current scope and evaluate the template code
+		ob_start();
+
 		try {
-			return $this->render();
+			extract($this->data());
+			include $this->file;
 		}
-		catch(\Exception $e) {
-			// !!!! the __toString method isn't allowed to throw exceptions, SO we turn them into NULL
-			// Возврат НЕ string приведет к ErrorException [ 4096 ]: Method __CLASS__::__toString() must return a string value
-			return;
+		catch (\Exception $e) {
+			ob_end_clean();
+			throw $e;
+		}
 
-			// Fatal error - здесь можно??? передать свое сообщение об ошибке
-		//	trigger_error(Error::$user_msg.$e->getMessage().$e->getTraceAsString());
-		}
+		return ob_get_clean();
 	}
 
 	/**

@@ -68,7 +68,7 @@ class Controller
     {
 		// Setup the empty layout view used by the controller.
 		if (is_string($this->layout)) {
-			$this->layout = View::make($this->layout);
+			$this->layout = new View($this->layout);
 		}
     }
 
