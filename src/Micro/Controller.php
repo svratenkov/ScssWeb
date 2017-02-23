@@ -9,55 +9,8 @@ namespace Micro;
 class Controller
 {
 	// The name of the layout view 
-	public $layout = '';	// any string will cause constructor to create layout view with this name and without data
-
-	// Current action for use anywhere
-	public static $action;
-
-	/**
-	 * Make controller method name for a given action and check it's existence in the user's controller
-	 * 
-	 * @param  string
-	 * @return string | NULL
-	 */
-    public static function method($action)
-    {
-		// Save this action for further use
-		static::$action = $action;
-
-		$method = 'action'.ucfirst($action === '/' ? 'index' : $action);
-
-		return method_exists(static::class, $method) ? $method : NULL;
-    }
-
-	/**
-	 * Call given controller action
-	 * If action doesn't exist action 'error404' will be called
-	 * Throws an exception if action 'error404' is undefined in the controller
-	 *
-	 * @param  string
-	 * @param  array
-	 * @return any
-	 */
-    public static function call($action, $param = NULL)
-    {
-		// Make controller method
-		if (is_null($method = static::method($action))) {
-			if (is_null($method = static::method('error404'))) {
-				throw new \Exception("Can't found controller action for `{static::$action} - Page not found`.");
-			}
-		}
-
-		// Make controller instance
-		$controller = new static();
-
-		// Call controller method triada
-		$controller->before();
-		$response = $controller->$method($param);
-		$response = $controller->after($response);
-
-		return $response;
-    }
+	// any string will cause constructor to create layout view with this name and without data
+	public $layout = '';
 
     /**
      * Create a new controller instance with layout view.
@@ -70,6 +23,45 @@ class Controller
 		if (is_string($this->layout)) {
 			$this->layout = new View($this->layout);
 		}
+    }
+
+	/**
+	 * Call given controller action
+	 * If action doesn't exist action 'error404' will be called
+	 * Throws an exception if action 'error404' is undefined in the controller
+	 *
+	 * @param  string
+	 * @param  array
+	 * @return any
+	 */
+    public function call($action, $params = [])
+    {
+		// Make controller method name
+		if (is_null($method = $this->method($action))) {
+			if (is_null($method = $this->method('error404'))) {
+				throw new \Exception("Can't find controller action for `{$action}`.");
+			}
+		}
+
+		// Call controller method triada
+		$this->before();
+		$response = $this->$method($params);
+		$response = $this->after($response);
+
+		return $response;
+    }
+
+	/**
+	 * Make controller method name for a given action and check it's existence in the user's controller
+	 * 
+	 * @param  string
+	 * @return string | NULL
+	 */
+    public function method($action)
+    {
+		$method = 'action'.ucfirst($action === '/' ? 'index' : $action);
+
+		return method_exists($this, $method) ? $method : NULL;
     }
 
 	/*

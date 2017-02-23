@@ -78,17 +78,39 @@ class View
 	}
 
 	/**
+	 * Get/Set the view directory
+	 *
+	 * @param  string  $name
+	 * @return $this
+	 */
+	public static function dir($name = NULL)
+	{
+		if (! is_null($name)) {
+			// Set views dir
+			if (! ($dir = realpath($name))) {
+				$cwd = getcwd();
+				throw new \Exception("Can't find views directory `{$name}` in cwd: `{$cwd}`");
+			}
+			static::$dir = $dir.DIRECTORY_SEPARATOR;
+		}
+
+		// Return views dir
+		return static::$dir;
+	}
+
+	/**
 	 * Render view.
 	 *
 	 * @return string
 	 */
 	public function render()
 	{
-		$this->file = static::$dir.DIRECTORY_SEPARATOR.$this->name.'.php';
+		$this->file = static::$dir.$this->name.'.php';
 
 		if (! file_exists($this->file))
 		{
-			throw new \Exception("Can't find view template `{$this->file}`");
+			$dir = static::$dir;
+			throw new \Exception("Can't find view template `{$this->file}` in views dir `{$dir}`");
 		}
 
 		// Add view data to current scope and evaluate the template code

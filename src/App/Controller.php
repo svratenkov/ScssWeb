@@ -17,23 +17,13 @@ use Micro\View;
 
 class Controller extends MicroController
 {
-	// HTML page titles
-	public static $page_titles = [
-		'/'			=> 'Home',
-		'compile'	=> 'Compile',
-		'watch'		=> 'Watch',
-		'project'	=> 'Project',
-		'error404'	=> 'Error404',
-	//	'clearcache'=> 'ClearCache',
-	//	'clear'		=> 'Clear',
-	//	'stopwatch'	=> 'StopWatch',
-	//	'ajax'		=> 'Ajax',
-	];
+	// Current action saved in this->call() for page titles support in this->after()
+	public static $action;
 
 	/**
 	 * Call given controller action
-	 *
      * Overloads the parent method
+     * 
      * All page names for SCSS projects begin with '$' to be distingvished from "normal" pages 
      * Check for project's page names and call actionProject
      * 
@@ -41,18 +31,18 @@ class Controller extends MicroController
 	 * @param  array
 	 * @return any
 	 */
-    public static function call($action, $param = NULL)
+    public function call($action, $params = [])
     {
 		// Check for project's page requesting
 		if (substr($action, 0, 1) === '$') {
-			$project = substr($action, 1);
+			$params = [ substr($action, 1) ];
 			$action = 'project';
 		}
-		else {
-			$project = NULL;
-		}
 
-		return parent::call($action, $project);
+		// Save current action for page titles support in this->after()
+		static::$action = $action;
+
+		return parent::call($action, $params);
     }
 
 	/*
@@ -70,7 +60,7 @@ class Controller extends MicroController
 		}
 
 		// Define application layout templates dir
-		View::$dir = realpath('src/views');
+		View::dir('src/views');
 
 		// Define empty app layout
 		$this->layout
@@ -90,7 +80,8 @@ class Controller extends MicroController
 	public function after($response)
 	{
 		// Add page titles
-		$this->layout->with('title', static::$page_titles[static::$action].' - ScssWeb Watcher');
+		$title = ucfirst(static::$action === '/' ? 'home' : static::$action);
+		$this->layout->with('title', $title.' - ScssWeb Watcher');
 
 		// Define project name tabs in the header
 		$this->layout->header->with([
@@ -197,17 +188,19 @@ class Controller extends MicroController
 
 	/**
 	 *	Project action
+	 * 	If set, first param is active project name
 	 */
-	public function actionProject($project = NULL)
+	public function actionProject($params = [])
 	{
-		// Set new active project defined in the first segment
-		if ($project) {
-			Project::activate($project);
+		// Set new active project if defined in the first param
+		if (isset($params[0])) {
+			Project::activate($params[0]);
 		}
 
 		$this->layout->content
 			->name('project')
 			->with('active', Project::$active)
+			->with('css_format', Compiler::$css_formats[Project::$active->css_style])
 		;
 	}
 
@@ -230,7 +223,7 @@ class Controller extends MicroController
 	{
 		$this->layout->content
 			->name('404')
-			->with('uri', Request::$query)
+			->with('url', Request::url(Request::$query))
 		;
 	}
 }

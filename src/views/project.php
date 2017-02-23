@@ -21,7 +21,7 @@
 		</tr>
 		<tr>
 			<td style="text-align: right; font-weight: bold;">CSS file style</td>
-			<td><?= $active->css_style; ?></td>
+			<td><?= $css_format.' ('.$active->css_style.')'; ?></td>
 		</tr>
 		<tr>
 			<td style="text-align: right; font-weight: bold;">CSS file signature</td>

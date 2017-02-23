@@ -1,11 +1,13 @@
 <?php
 /*
 	Http Request - request parser & maker
-	This simple app has only one level of pages, so any query has only one segment
 
-	Http request addressing modes:
-		Script-mode:	http://example.com/<base>/<path>/script.php?page_name
-		SEO-mode:		http://example.com/<base>/<path>?page_name
+	Supports Http request addressing modes:
+		SEO mode:	http://example.com/[base/path]/query/segments
+		Query mode:	http://example.com/[base/path]/index.php?query/segments
+
+	Query string for Query mode is compatibile with SEO mode.
+	It's format is: `?value1/value2`, rather then: `?var1=value1&var2=value2`.
 
 	Main methods:
 	-	Parse Request URL
@@ -16,16 +18,12 @@ namespace Micro;
 
 class Request
 {
-	// Http scheme (protocol) and server
-	public static $host;				// Server host
+	public static $redirected;			// Is request was redirected by .htaccess?
 
-	// Http URL
-	public static $base;				// Base path of this site in DocRoot
-	public static $query;				// Query URI - path from base to requested page (root path ==> '/')
-//	public static $segments;			// Path segments array
-
-	// Is request was redirected by .htaccess?
-	public static $redirected;
+	public static $host;				// Server host: Http scheme (protocol) and server
+	public static $base;				// Base path from DocRoot
+	public static $segments;			// Query segments array
+	public static $query;				// Query string
 
 	/*
 		Parse current request params
@@ -38,36 +36,44 @@ class Request
 		// Server host
 		static::$host = $_SERVER['HTTP_HOST'];
 
-		// Domain & Script name
-		list(static::$base, static::$query) = static::$redirected ? static::parse_redirect() : static::parse_request();
+		// Request base and sements
+		list(static::$base, static::$segments) = static::$redirected ? static::parse_redirect() : static::parse_request();
+
+		// Empty segments mean home '/'
+		if (! isset(static::$segments[0])) {
+			static::$segments[0] = '/';
+		}
+
+		// Plain request query sring
+		static::$query = implode('/', static::$segments);
 
 		// Return request query segments
-		return static::$query;
+		return static::$segments;
 	}
 
 	/*
 		Parse normal query request (without .htaccess redrecting):
 			[http://localhost]/base/path/index.php?page_name
 
-		Return: array[BaseUri, Query]
+		Return: array[BaseUri, Query-Segments,... ]
 	*/
 	public static function parse_request()
 	{
 		$uri = trim($_SERVER['REQUEST_URI'], '/');
 
 		$parts = explode('?', $uri);
+		$base = array_shift($parts);
 
-		$base = $parts[0];								// --> "base/path/index.php"
-		$query = isset($parts[1]) ? $parts[1] : '/';
+		$query = isset($parts[0]) ? explode('/', $parts[0]) : [];
 
-		return [$base, $query];
+		return [ $base, $query ];
 	}
 
 	/*
 		Parse redirected request (with .htaccess redrecting):
 			[http://localhost]/base/path/page_name
 
-		Return: array[BaseUri, Query]
+		Return: array[BaseUri, Query-Segments,... ]
 	*/
 	public static function parse_redirect()
 	{
@@ -76,7 +82,7 @@ class Request
 		$script_parts = explode('/', ltrim($_SERVER['SCRIPT_NAME'], '/'));
 		$base_parts = $query_parts = [];
 
-		// Ищем base - первые совпадающие сегменты URL и скрипта, и path - оставшиеся
+		// base_parts - first identical segments of URL and Script, и path_parts - all the rest
 		foreach ($url_parts as $key => $segment) {
 			if (empty($path_parts) and isset($script_parts[$key]) and $script_parts[$key] == $segment) {
 				$base_parts[] = $segment;
@@ -86,14 +92,11 @@ class Request
 			}
 		}
 
-		$base = implode('/', $base_parts);
-		$query = implode('/', $query_parts) ?: '/';
-
-		return [$base, $query];
+		return [ implode('/', $base_parts), $query_parts ];
 	}
 
 	/*
-		Base URL ЭТОГО сайта - абсолютный или относительный
+		This site Base URL - absolute or relative
 	*/
 	public static function base_url($abs = TRUE)
 	{
@@ -101,8 +104,7 @@ class Request
 	}
 
 	/*
-		URL ЭТОГО сайта для заданного URI - абсолютный или относительный
-		Если URI не задан, берем URI запроса
+		This site URL for given URI (or for current reguest) - absolute or relative
 	*/
 	public static function url($uri, $abs = TRUE)
 	{
@@ -113,7 +115,7 @@ class Request
 	}
 
 	/*
-		Редирект на заданную страницу
+		Redirect to the given page
 	*/
 	public static function redirect($uri)
 	{

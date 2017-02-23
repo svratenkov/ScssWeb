@@ -46,7 +46,7 @@ class Project
 			return;
 		}
 
-		// Resolve given name
+		// Resolve given project name
 		if (is_null($name = static::resolve_name($name))) {
 			return;
 		}
@@ -60,12 +60,11 @@ class Project
 			return static::$active;
 		}
 
-		// Set new active project name & update session
+		// Set new active project name, update session
 		static::$active->name = $_SESSION['active'] = $name;
 
 		// Set new active project params from config
-		$config = static::$projects[$name];
-		foreach ($config as $key => $val) {
+		foreach (static::$projects[$name] as $key => $val) {
 			static::$active->{$key} = $val;
 		}
 

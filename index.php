@@ -1,21 +1,26 @@
 <?php
 /*
-	ScssWeb - Scss compiler with file caching & web watcher
+	ScssWeb - Scss web compiler & watcher
 */
 use App\Controller;
 use Micro\Request;
 
-// Load autoloader
+// Composer's autoloader
 require 'vendor/autoload.php';
 
 // Report all errors & warnings
 error_reporting(-1);
 
-// Http request parser detects requested page id
+// Http request parser detects requested page
 Request::parse();
 
-// Call controller action
-$response = Controller::call(Request::$query);
+// Make AppController instance
+$controller = new Controller();
+
+// Call controller action and retrieve response
+// This	simple application uses ONLY ONE query param to address any of it's page
+// So Request::$query is both a reguested page & a controller's action
+$response = $controller->call(Request::$query);
 
 exit($response);
 
